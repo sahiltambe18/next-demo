@@ -1,5 +1,6 @@
-'use client'
+"use client";
 import MeetupList from "@/components/meetups/MeetupList";
+import db from "../Data/db";
 
 const meetups = [
   {
@@ -25,19 +26,53 @@ const meetups = [
   },
 ];
 
-import {useSelector} from 'react-redux'
+import { useSelector } from "react-redux";
+interface obj {
+  id: string;
+  image: string;
+  title: string;
+  address: string;
+}
 
-export default function Home() {
-  
-  interface obj {
-    id:string , image:string , title:string,address:string
-  }
-  const state:obj[] = useSelector((state:{meetup:obj[]})=> state.meetup)
+export default async function Home(props: { meetups: obj[] }) {
+  // const state:obj[] = useSelector((state:{meetup:obj[]})=> state.meetup)
+  // const data = await fetch("/api",{method:'GET'});
+  // const meetupsArr = await data.json();
 
+  const state = props.meetups || meetups;
 
   return (
     <main>
       <MeetupList meetups={state} />
     </main>
   );
+}
+
+// export async function getStaticProps() {
+//   console.log("working")
+//   const data = await fetch("/api",{method:'GET'});
+//   const meetups = await data.json();
+//   console.log(meetups)
+//   return{
+//     props:{
+//       meetups,
+//     },
+//   }
+// }
+export async function getStaticProps() {
+  console.log("working");
+  const res = await db.find().toArray();
+  const meetups = res.map((meetup) => ({
+    id: meetup._id.toString(),
+    title: meetup.title,
+    image: meetup.image,
+    description: meetup.description,
+    address: meetup.address,
+  }));
+
+  return {
+    props: {
+      meetups,
+    },
+  };
 }

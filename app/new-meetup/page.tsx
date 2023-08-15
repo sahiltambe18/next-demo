@@ -17,10 +17,20 @@ const page = () => {
     address:string,
   }
 
-  const newMeetupForm = (meetupData : data)=>{
+  const newMeetupForm = async (meetupData : data)=>{
 
-    dispatch(addMeetup({...meetupData , id:"m"+Math.floor(Math.random()*10)}))
-    router.push("/")
+   const res = await fetch("/new-meetup/api",{
+      method:"POST",
+      body: JSON.stringify(meetupData),
+      headers:{
+        "Content-Type": "application/json"
+      },
+    })
+
+    if (res.ok || (res.status===201)) {
+      router.push("/")
+    }
+
   }
 
   return (
@@ -30,4 +40,6 @@ const page = () => {
   )
 }
 
+
 export default page
+

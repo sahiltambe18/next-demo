@@ -15,7 +15,6 @@ const page = ({params}:{params:{meetupid:string}}) => {
 
   const item = useSelector((state:{meetup:obj[]})=>state.meetup.find(Item=> Item.id===mid))
 
-  console.log(item)
 
 
 
