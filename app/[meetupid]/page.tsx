@@ -9,7 +9,7 @@ interface obj {
   title: string;
   address: string;
 }
-
+ 
 const getData = async (id: string) => {
   try {
     const oid = await new ObjectId(id);
@@ -32,7 +32,7 @@ const getData = async (id: string) => {
       image: "",
       address: "",
       id: "",
-      message: error,
+      message: "error occured while retrieving",
     };
   }
 };
