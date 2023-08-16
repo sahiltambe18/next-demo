@@ -1,43 +1,33 @@
 import MeetupList from "@/components/meetups/MeetupList";
-import { GetStaticProps } from "next";
+import db from '../Data/db'
+// interface Meetup {
+//   id: string;
+//   title: string;
+//   image: string;
+//   address: string;
+// }
 
-interface Meetup {
-  id: string;
-  title: string;
-  image: string;
-  address: string;
-}
+// interface HomeProps {
+//   meetups: Meetup[];
+// }
 
-interface HomeProps {
-  meetups: Meetup[];
-}
+const getData = async () => {
+  const res = await db.find().toArray();
+  const meettups = res.map((meetup) => ({
+    id: meetup._id.toString(),
+    title: meetup.title,
+    image: meetup.image,
+    description: meetup.description,
+    address: meetup.address,
+  }));
+  
 
-export const getStaticProps: GetStaticProps<HomeProps> = async (context) => {
-  try {
-    console.log("Fetching meetups...");
-    const response = await fetch("/api", { method: "GET" });
-    const meetupsArr = await response.json();
-
-    console.log("Fetched meetups:", meetupsArr);
-
-    return {
-      props: {
-        meetups: meetupsArr,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return {
-      props: {
-        meetups: [],
-      },
-    };
-  }
+  return meettups;
 };
 
-const Home = ({ meetups }: HomeProps) => {
-  console.log(meetups)
-  return <main>{meetups && <MeetupList meetups={meetups} />}</main>;
+const Home = async () => {
+  const state = await getData();
+  return <main>{state && <MeetupList meetups={state} />}</main>;
 };
 
 export default Home;

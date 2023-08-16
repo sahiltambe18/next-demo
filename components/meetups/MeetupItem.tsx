@@ -1,3 +1,4 @@
+"use client"
 import { useRouter } from 'next/navigation';
 import Card from '../ui/Card';
 import classes from './MeetupItem.module.css';

@@ -1,13 +1,16 @@
 "use client"
 import React from 'react'
 import NewMeetupForm from '../../components/meetups/NewMeetupForm';
-import {addMeetup} from '../../store/MeetupSlice'
-import {useDispatch} from 'react-redux'
-import {useRouter} from 'next/navigation';
+import {redirect, useRouter} from 'next/navigation';
+
+const setter = async() =>{
+  const res = await fetch("/api",{method:"GET" })
+  const data = await res.json();
+  console.log(data)
+}
 
 const page = () => {
 
-  const dispatch = useDispatch();
   const router = useRouter()
 
   interface data {
@@ -16,6 +19,8 @@ const page = () => {
     image: string,
     address:string,
   }
+
+  setter()
 
   const newMeetupForm = async (meetupData : data)=>{
 
@@ -27,10 +32,9 @@ const page = () => {
       },
     })
 
-    if (res.ok || (res.status===201)) {
-      router.push("/")
-    }
-
+    
+      router.push("/",redirect)
+    // redirect("/")
   }
 
   return (
