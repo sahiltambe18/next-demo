@@ -1,31 +1,62 @@
-'use client'
-import MeetupItem from '@/components/meetups/MeetupItem'
-import React from 'react'
+import MeetupItem from "../../components/meetups/MeetupItem";
+import React from "react";
 
-import {useSelector} from 'react-redux'
-
+import { ObjectId } from "mongodb";
+import db from "../../Data/db";
 interface obj {
-  id:string , image:string , title:string,address:string
+  id: string;
+  image: string;
+  title: string;
+  address: string;
 }
+ 
+const getData = async (id: string) => {
+  try {
+    const oid = await new ObjectId(id);
+    const meetup = await db.findOne({ _id: oid });
+    // console.log(meetup);
 
-const page = ({params}:{params:{meetupid:string}}) => {
-  
+    if (!meetup) {
+      throw new Error("Meetup not found");
+    }
 
-  const mid = params.meetupid
+    return {
+      title: meetup.title,
+      image: meetup.image,
+      address: meetup.address,
+      id: meetup._id.toString(),
+    };
+  } catch (error) {
+    return {
+      title: "",
+      image: "",
+      address: "",
+      id: "",
+      message: "error occured while retrieving",
+    };
+  }
+};
 
-  const item = useSelector((state:{meetup:obj[]})=>state.meetup.find(Item=> Item.id===mid))
+const page = async ({ params }: { params: { meetupid: string } }) => {
+  const mid = params.meetupid;
 
-  console.log(item)
-
-
+  const item = await getData(mid);
 
   return (
     <div>
-      {item ? <MeetupItem address={item.address} id={item.id} title={item.title} image={item.image} key={item.id} /> :(
+      {!item.message ? (
+        <MeetupItem
+          address={item.address}
+          id={item.id}
+          title={item.title}
+          image={item.image}
+          key={item.id}
+        />
+      ) : (
         <h1>Error 404 Not Found</h1>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;

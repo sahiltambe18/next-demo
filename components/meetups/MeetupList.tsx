@@ -10,8 +10,6 @@ interface obj {
 
 function MeetupList({meetups}:{meetups:obj[]}) {
   
-  
-
   return (
     <ul className={classes.list}>
       {meetups.map((meetup) => (
